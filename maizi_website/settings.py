@@ -114,13 +114,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR,  'static'),
 )
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
-)
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+
+# TEMPLATE_DIRS = (
+#     os.path.join(BASE_DIR,  'templates'),
+# )
 
 # define
 AUTH_USER_MODEL = "common.UserProfile"

@@ -51,14 +51,9 @@
             <div class="hotkeyword">
               <h4>推荐搜索关键词</h4>
               <ul class="cf">
-                <li><a href="">Android</a></li>
-                <li><a href="">Android</a></li>
-                <li><a href="">WP</a></li>
-                <li><a href="">Android</a></li>
-                <li><a href="">WP</a></li>
-                <li><a href="">Android</a></li>
-                <li><a href="">WP</a></li>
-                <li><a href="">Android</a></li>
+                {% for rekey in rekeywords %}
+                <li><a href="">{{ rekey.name }}</a></li>
+                {% endfor %}
               </ul>
             </div>
           </div>
