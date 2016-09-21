@@ -177,7 +177,7 @@ class CareerCourse(models.Model):
 
     name = models.CharField(u'职业课程名称', max_length=50)
     short_name = models.CharField(u'职业课程英文名称简写', max_length=10, unique=True)
-    image = models.ImageField(u'课程小图标', upload_to='course/%Y/%m')
+    image = models.ImageField(u'课程小图标', upload_to='course_img/%Y/%m')
     description = models.TextField(u'文字介绍')
     student_count = models.IntegerField(u'学习人数', default=0)
     market_page_url = models.URLField(u'营销页面地址', blank=True, null=True)
@@ -228,7 +228,7 @@ class Course(models.Model):
     '''
 
     name = models.CharField(u'课程名称',max_length=50)
-    image = models.ImageField(u'课程封面', upload_to='course/%Y/%m')
+    image = models.ImageField(u'课程封面', upload_to='course_img/%Y/%m')
     description = models.TextField(u'课程描述')
     is_active = models.BooleanField(u'有效性', default=True)
     date_publish = models.DateTimeField(u'发布时间', auto_now_add=True)
