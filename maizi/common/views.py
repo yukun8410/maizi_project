@@ -7,9 +7,9 @@ Created on 2015/11/3
 Common模块View业务处理。
 """
 
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from common.models import *
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponseRedirect,HttpResponse
 from django.contrib.auth import authenticate,login,logout
 import json
 from django.contrib.auth.hashers import make_password,check_password
@@ -56,10 +56,15 @@ def login_check(request):
     user = authenticate(username=username, password=password)
     if user is not None:
         login(request, user)
-        return JsonResponse({'info': 'user'}, safe=False)
+        return redirect(request.META['HTTP_REFERER'])
+        # return HttpResponseRedirect(request.META['HTTP_REFERER'])
     else:
         return JsonResponse({'info': 'None'}, safe=False)
 
+
+def logout_user(request):
+    logout(request)
+    return redirect(request.META['HTTP_REFERER'])
 
 
 def register(request):

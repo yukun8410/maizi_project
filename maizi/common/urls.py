@@ -10,7 +10,7 @@ import common
 import django
 from django.conf.urls import patterns, url
 from django import views
-from common import views
+from common.views import *
 # urlpatterns = patterns('common.views',
 #     url(r'^$', 'index', name='index'),
 #     url(r'^ad/(?P<path>.*)$', views.static.serve, {'document_root': 'images/ad/'}),
@@ -18,12 +18,13 @@ from common import views
 
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^$', index, name='index'),
     url(r'^ad/(?P<path>.*)$', django.views.static.serve, {'document_root': 'images/ad/'}),
-    url(r'^login_check/$', common.views.login_check, name='login_check'),
-    url(r'^register/$', views.register, name='register'),
-    url(r'^careercourse/$', views.careercourse, name='careercourse'),
-    url(r'^small_course/$', views.small_course, name='small_course'),
+    url(r'^login_check/$', login_check, name='login_check'),
+    url(r'^logout/$', logout_user, name='logout'),
+    url(r'^register/$', register, name='register'),
+    url(r'^careercourse/$', careercourse, name='careercourse'),
+    url(r'^small_course/$', small_course, name='small_course'),
     url(r'^course_img/(?P<path>.*)$', django.views.static.serve, {'document_root': 'images/course_img/'}),
         ]
 
