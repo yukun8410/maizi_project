@@ -10,9 +10,10 @@ Common模块View业务处理。
 from django.shortcuts import render, redirect
 from common.models import *
 from django.http import JsonResponse, HttpResponseRedirect,HttpResponse
-from django.contrib.auth import authenticate,login,logout
-import json
-from django.contrib.auth.hashers import make_password,check_password
+from django.contrib.auth import authenticate, login, logout
+from random import Random
+from django.contrib.auth.hashers import make_password
+import django.utils.timezone
 
 
 
@@ -20,6 +21,7 @@ from django.contrib.auth.hashers import make_password,check_password
 def index(request):
     rekeywords = RecommendKeywords.objects.all()
     ad_list = Ad.objects.order_by("-index")
+
 
     return render(request, "common/index.html", locals())
 
@@ -30,15 +32,14 @@ def careercourse(request):
     info_data = Keywords
     info = info_data.objects.get(name=info_text)
     careercourse = info.careercourse_set.all()
-    # course = info.course_set.all()
     careercourse_list = []
-    # course_list=[]
     for inf in careercourse:
         img = str(inf.image)
         careercourse_list.append({'info': inf.name, 'img': img})
         return JsonResponse(careercourse_list, safe=False)
 
 
+# 小课程搜索
 def small_course(request):
     info_text = request.GET.get('com_input', None)
     info_data = Keywords
@@ -50,6 +51,7 @@ def small_course(request):
         return JsonResponse(course_list, safe=False)
 
 
+# 登录及验证
 def login_check(request):
     username = request.GET.get('username', None)
     password = request.GET.get('password', None)
@@ -57,15 +59,81 @@ def login_check(request):
     if user is not None:
         login(request, user)
         return redirect(request.META['HTTP_REFERER'])
-        # return HttpResponseRedirect(request.META['HTTP_REFERER'])
     else:
         return JsonResponse({'info': 'None'}, safe=False)
 
 
+# 注销
 def logout_user(request):
     logout(request)
     return redirect(request.META['HTTP_REFERER'])
 
 
+# 注册用户并登录
 def register(request):
-    pass
+    user_email = request.GET.get('username', None)
+    user_pass = request.GET.get('password', None)
+    user = UserProfile.objects.filter(username=user_email).exists()
+    # print user
+    if user is True:
+        return JsonResponse({'info': 'exist'}, safe=False)
+    else:
+        user_reg = UserProfile.objects.create_user(user_email, password=make_password(user_pass, None, 'pbkdf2_sha256'))
+        user_reg.save()
+        user_reg.backend = 'django.contrib.auth.backends.ModelBackend'  # 声名使用哪个后台验证模块去做登录验证
+        login(request, user_reg)
+        return JsonResponse({'info': 'ok'}, safe=False)
+
+
+# 自动生成找回密码的链接验证码方法
+def random_str(randomlength=10):
+    str = ''
+    chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+    length = len(chars) - 1
+    random = Random()
+    for i in range(randomlength):
+        str += chars[random.randint(0, length)]
+    return str
+
+
+# 账号密码找回, 发送认证链接
+def forgot_password(request):
+    user_email = request.GET.get('username', None)
+    user = UserProfile.objects.filter(username=user_email).exists()
+    if user is False:
+        return JsonResponse({'info': 'non-existent'}, safe=False)
+    else:
+        bcode = random_str()
+        record = EmailVerifyRecord.objects.create(code=bcode, email=user_email, type=1, ip=request.META['REMOTE_ADDR'])
+        record.save()
+        message = u'请打开链接重置密码'+"\n"+"http://127.0.0.1:8000/find_pass/"+ bcode
+        send_mail('用户密码找回认证',message, 'rxdyh12@126.com',[user_email], fail_silently=True)
+        return JsonResponse({'info': 'ok'}, safe=False)
+
+
+# 修改密码前期处理
+def find_pass(request, bcode):
+    change_status = EmailVerifyRecord.objects.filter(code=bcode)
+    if change_status.exists() is True:
+        email = change_status.values('email').first()['email']
+        create_time = change_status.values('created').first()['created']
+        time_now = django.utils.timezone.now()
+        time = time_now-create_time
+        if time.days >= 1:
+            return render(request, 'common/find_pwd_error.html', locals())
+        else:
+            user_info = UserProfile.objects.filter(username=email).first()
+            return render(request, 'common/changepass.html', locals())
+    else:
+        return render(request, 'common/find_pwd_error.html', locals())
+
+
+# 修改密码后端处理
+def change_find_pass(request):
+    user_email = request.GET.get('username', None)
+    new_password = request.GET.get('password', None)
+    user_info = UserProfile.objects.filter(username=user_email)
+    user_info.password = make_password(new_password, None, 'pbkdf2_sha256')
+    user_info.update()
+    return JsonResponse({'info': 'ok'}, safe=False)
+

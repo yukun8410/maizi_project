@@ -1,0 +1,30 @@
+{% extends "common/base.html" %}
+{% load staticfiles %}
+{% block container %}
+
+<div class="modal-dialog modal-sm">
+  <div class="modal-header">
+    <h4 class="modal-title" id="loginModalLabel" >邮箱验证成功请设置新密码</h4>
+  </div>
+  <hr>
+  <ul>
+    <li class="form-group has-error"><input id="new_password" name="new_password" type="password" class="form-control" placeholder="请输入新密码"></li>
+    <li class="form-group"><input id="new_password_again" name="new_password_again" type="password" class="form-control" placeholder="请确认新密码"></li>
+  </ul>
+  <div>
+    <input id="user_info" type="hidden" name="user_info" value="{{ user_info.email }}">
+    <input type="hidden" name="source_url" value="{{ request.META.HTTP_REFERER }}">
+    <button   id="change_pass_button"  class="btn btn-micv5 btn-block" >提交</button>
+  </div>
+  <div id="pass_error" class="tips-error bg-danger"></div>
+
+</div>
+
+{% endblock %}
+{% block custom_script %}
+    <script>
+    $.ajaxSetup({
+    data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+});
+    </script>
+{% endblock %}

@@ -331,7 +331,7 @@ class UserProfileManager(BaseUserManager):
         now = datetime.now()
         if not email:
             raise ValueError(u'Email必须填写')
-        user = self.model(username=username,email=email,
+        user = self.model(username=username, email=email,
                           is_staff=is_staff, is_active=True,
                           is_superuser=is_superuser, last_login=now,
                           date_joined=now, **extra_fields)
