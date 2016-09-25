@@ -33,6 +33,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+EMAIL_HOST = 'smtp.126.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'rxdyh12@126.com'
+EMAIL_HOST_PASSWORD = '1qa2ws3ed4rf'
+# EMAIL_USER_TLS = True
+
 
 # Application definition
 
