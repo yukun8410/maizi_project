@@ -303,7 +303,7 @@ $(function() {
       autoReinitialise: true
     });
 });
-//ajax方式csrf token设置（ajax的toke设置必须写在模板页）
+//ajax方式csrf_token设置（ajax的toke设置必须写在模板页）
 $.ajaxSetup({
     data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
 });

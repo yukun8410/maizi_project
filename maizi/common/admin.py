@@ -45,6 +45,7 @@ class UserProfileAdmin(UserAdmin):
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login',)}),
+        ('Advance Info', {'fields': ('avatar_url', 'description')})
     )
     add_fieldsets = (
         (None, {

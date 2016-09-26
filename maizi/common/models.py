@@ -354,8 +354,8 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     '''
 
     username = models.CharField(u'昵称', max_length=30, unique=True)
-    first_name = models.CharField(u'名字', max_length=30, blank=True)
-    last_name = models.CharField(u'姓氏', max_length=30, blank=True)
+    first_name = models.CharField(u'姓氏', max_length=30, blank=True)
+    last_name = models.CharField(u'名字', max_length=30, blank=True)
     email = models.EmailField(u'email', unique=True, null=True, blank=True)
     is_staff = models.BooleanField(u'职员状态', default=False, help_text='是否能够登录管理后台')
     is_active = models.BooleanField(u'是否激活', default=True, help_text='用户是否被激活，未激活则不能使用')
