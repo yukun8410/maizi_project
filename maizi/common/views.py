@@ -16,13 +16,30 @@ from django.contrib.auth.hashers import make_password
 import django.utils.timezone
 
 
-
 # 首页
 def index(request):
+    # 搜索关键字
     rekeywords = RecommendKeywords.objects.all()
+    # 广告列表
     ad_list = Ad.objects.order_by("-index")
-
-
+    # 最新课程
+    new_course_list = Course.objects.order_by("-date_publish")
+    # 最多播放课程
+    play_course_list = Course.objects.order_by("-click_count")
+    # 最具人气课程
+    favorite_course_list = Course.objects.order_by("-favorite_count")
+    # 名师风采
+    teacher_list = UserProfile.objects.filter(groups__name="老师")
+    # 推荐新闻(官方活动)
+    reading_av = RecommendedReading.objects.filter(reading_type='AV')
+    # 推荐新闻（开发者资讯）
+    reading_news = RecommendedReading.objects.filter(reading_type='NW')
+    # 推荐新闻（技术交流）
+    reading_dc = RecommendedReading.objects.filter(reading_type='DC')
+    # 友情链接(图片链接)
+    pic_links = Links.objects.filter(is_pic=1)
+    # 友情链接（非图片）
+    links = Links.objects.filter(is_pic=0)
     return render(request, "common/index.html", locals())
 
 
@@ -107,7 +124,7 @@ def forgot_password(request):
         record = EmailVerifyRecord.objects.create(code=bcode, email=user_email, type=1, ip=request.META['REMOTE_ADDR'])
         record.save()
         message = u'请打开链接重置密码'+"\n"+"http://127.0.0.1:8000/find_pass/"+ bcode
-        send_mail('用户密码找回认证',message, 'rxdyh12@126.com',[user_email], fail_silently=True)
+        send_mail('用户密码找回认证',message, 'rxdyh12@126.com', [user_email], fail_silently=True)
         return JsonResponse({'info': 'ok'}, safe=False)
 
 
